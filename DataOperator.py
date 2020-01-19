@@ -34,7 +34,7 @@ def load_train_data(train_data_path):
     sequence_list = kr.preprocessing.sequence.pad_sequences(sequence_list, maxlen=cfg.max_sequence_len + 1, padding='pre', truncating='pre')
     sequence_list = np.array(sequence_list)
 
-    train_text = sequence_list[:, :-1]
+    train_text = kr.utils.to_categorical(sequence_list[:, :-1], num_classes=char_count)
     train_label = kr.utils.to_categorical(sequence_list[:, -1], num_classes=char_count)
 
     return char_to_index, char_count, train_text, train_label

@@ -9,12 +9,13 @@ import DataOperator as do
 
 import RNNLMNetwork as rn
 
-def generate_sentence(char_to_index, index_to_char, model, input_char, generate_num):
+def generate_sentence(char_to_index, index_to_char, char_count, model, input_char, generate_num):
     sentence = input_char.lower()
 
     for _ in range(generate_num):
         encoded = [char_to_index[char] for char in sentence]
         encoded = kr.preprocessing.sequence.pad_sequences([encoded], maxlen=cfg.max_sequence_len, padding='pre', truncating='pre')
+        encoded = kr.utils.to_categorical(encoded, num_classes=char_count)
 
         predict_label_index = model.predict_classes(encoded)
         char = index_to_char[predict_label_index[0]]
@@ -38,7 +39,7 @@ def main():
     rnnlm_model = rn.create_model(char_count, input_model_path)
 
     print()
-    print(generate_sentence(char_to_index, index_to_char, rnnlm_model, input_char, input_predict_count))
+    print(generate_sentence(char_to_index, index_to_char, char_count, rnnlm_model, input_char, input_predict_count))
 
 if __name__ == '__main__':
     main()
